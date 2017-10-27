@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Set Up</title>
+</head><body>https://doc.owncloud.org/server/8.1/user_manual/files/access_webdav.html<br/>
+https://doc.owncloud.org/server/8.1/admin_manual/configuration_server/performance_tuning.html<br/>
+https://doc.owncloud.org/server/8.1/admin_manual/<br/>
+<br/>
+<img src="screenshot.png" /><br/>
+<br/>
+<img src="screenshot 2.png" /><br/>
+<br/>
+<img src="screenshot 3.png" /><br/>
+<br/>
+<span style="color: #0000ff">&lt;?php<br/>
+$CONFIG&nbsp;= array (<br/>
+&nbsp; 'instanceid' =&gt; 'ocirkp0dspk9',<br/>
+&nbsp; 'passwordsalt' =&gt; 'cpTtxTmrEyFfL32pv1lZwfdpvzpI85',<br/>
+&nbsp; 'secret' =&gt; 'hUBxG6B4mjTzmUuB2TjHsAoJnIo21fHUullfKVsv6KN3uAlF',<br/>
+&nbsp; 'trusted_domains' =&gt; <br/>
+&nbsp; array (<br/>
+&nbsp; &nbsp; 0 =&gt; '192.168.1.7',<br/>
+&nbsp; &nbsp; 1 =&gt; '74.213.228.151',<br/>
+&nbsp; ),<br/>
+&nbsp; 'datadirectory' =&gt; '/var/www/owncloud/data',<br/>
+&nbsp; 'overwrite.cli.url' =&gt; 'http://192.168.1.7/owncloud',<br/>
+&nbsp; 'dbtype' =&gt; 'sqlite3',<br/>
+&nbsp; 'version' =&gt; '8.1.5.2',<br/>
+&nbsp; 'logtimezone' =&gt; 'UTC',<br/>
+&nbsp; 'installed' =&gt; true,<br/>
+'trusted_domains' =&gt;<br/>
+&nbsp; array (<br/>
+&nbsp; &nbsp; 'cosimo.ddns.net',<br/>
+&nbsp; &nbsp; '74.213.228.151',<br/>
+&nbsp; &nbsp; '192.168.1.7',<br/>
+&nbsp; ),<br/>
+</span><span style="color: #0000ff">);</span><br/>
+<br/>
+</body></html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>ALL IN 1</title>
+</head><body><span style="color: #007f00">/********* SYSTEM SETUP *********/</span><span style="color: #0000ff"><br/>
+</span><span style="color: #0000ff"><br/>
+</span><span style="color: #0000ff">FLASHING SD CARD</span><br/>
+<b>df -h</b><br/>
+<b>umount /dev/mmcblk0p1<br/>
+umount /dev/mmcblk0p2<br/>
+dd bs=4M if=2016-02-03-raspbian-jessie.img of=/dev/mmcblk0<br/>
+sync<br/>
+</b>--<br/>
+<br/>
+<span style="color: #0000ff">ROTATE LCD SCREEN<br/>
+</span><span style="color: #0000ff">(</span>don't forget to mount /boot first via <b>mount /dev/mmcblk0p1 /boot</b><span style="color: #0000ff">)</span><br/>
+<b>sudo nano /boot/config.txt</b><br/>
+&gt;lcd_rotate=2<br/>
+<b>sudo reboot</b><br/>
+--<br/>
+<br/>
+<span style="color: #0000ff">change your SSH host keys<br/>
+</span>as soon as possible as <i><b>all</b></i>&nbsp;ARM images are pre-configured the same keys.<br/>
+Changing the SSH host keys can be accomplished by doing the following:<br/>
+root@kali:~ <b>rm /etc/ssh/ssh_host_*</b><br/>
+root@kali:~ <b>dpkg-reconfigure openssh-server</b><br/>
+root@kali:~ <b>service ssh restart</b><br/>
+<br/>
+<span style="color: #0000ff">RASPI-CONFIG</span><br/>
+<b>sudo raspi-config</b><br/>
+1 Expand Filesystem<br/>
+2 Change Password<br/>
+3 Boot Options --&gt; B1 console<br/>
+5 Internationalisation --&gt; Keyboard --&gt; Logitech 350<br/>
+reboot now? YES<br/>
+--<br/>
+<span style="font-size: 10pt"><br/>
+<span style="color: #0000ff">UPDATING</span><br/>
+<b>sudo apt-get update<br/>
+</b><b>sudo apt-get upgrade -y</b><br/>
+<i>go make some coffee...</i><br/>
+<b>sudo reboot</b><br/>
+--<br/>
+<br/>
+<span style="color: #0000ff">SSH KEYS</span><br/>
+<b>ls ~/.ssh&#09;</b>#checking for existing ssh keys on the client<br/>
+</span><span style="font-size: 10pt"><b>ssh-keygen -t rsa -C "Keys 2 my Pi"</b></span>&nbsp;<br/>
+<b>install -d -m 700 .ssh</b>&#09;&#09;#from the server root dir!! (RasPi)<br/>
+<b>cat ~/.ssh/id_rsa.pub | ssh pi@192.168.1.7 'cat &gt;&gt; .ssh/authorized_keys</b>'&#09;#from the client!<br/>
+--<br/>
+<br/>
+<br/>
+<span style="color: #007f00">/********* Wi-Fi *********/<br/>
+<br/>
+</span><b>sudo iwlist wlan0 scan<br/>
+</b><b>sudo nano /etc/wpa_supplicant/wpa_supplicant.conf </b><ul><li style="list-style-type: none">network={ </li>
+<li style="list-style-type: none"><ul><li style="list-style-type: none">ssid="The_ESSID"</li>
+<li style="list-style-type: none">psk="Your_wifi_password" </li>
+</ul>
+</li>
+<li style="list-style-type: none">}</li>
+</ul>
+<br/>
+<br/>
+<br/>
+<span style="color: #007f00">/********* APACHE PHP *********/<br/>
+<br/>
+</span><span style="color: #0000ff">STATIC IP</span><b><br/>
+</b><b>ifconfig<br/>
+sudo route -n<br/>
+</b><b>sudo nano /etc/network/interfaces</b><ul><li style="list-style-type: none">iface eth0 inet static</li>
+<li style="list-style-type: none">address 192.168.1.2</li>
+<li style="list-style-type: none">netmask 255.255.255.0</li>
+<li style="list-style-type: none">network 192.168.1.0</li>
+<li style="list-style-type: none">broadcast 192.168.1.255</li>
+<li style="list-style-type: none">gateway 192.168.1.1</li>
+<li style="list-style-type: none"></li>
+</ul>
+<span style="color: #0000ff">INSTALL DEPENDENCIES</span><br/>
+<b>sudo apt-get install apache2<br/>
+sudo apt-get install php5 libapache2-mod-php5<br/>
+</b><b>sudo service apache2 restart</b><br/>
+<br/>
+<span style="color: #0000ff">DYNAMIC IP</span><br/>
+www.noip.com&#09;&#09;# http://cosimodm.ddns.net/ &nbsp;or &nbsp;74.213.228.115<br/>
+forward port 80 from your router @ 192.168.1.1<br/>
+www.portchecktool.com<br/>
+<b>sudo mkdir noip<br/>
+</b><b>cd noip</b><br/>
+<b>sudo wget http://www.no-ip.com/client/linux/noip-duc-linux.tar.gz</b><br/>
+<b>sudo tar vzxf noip-duc-linux.tar.gz</b><br/>
+<b>cd <i>noip-2.1.9-1</i></b><br/>
+<b>sudo make</b><br/>
+<b>sudo make install</b><br/>
+<b>sudo nano /etc/init.d/noip2 &#09;</b># create file to run noip client at startup<ul><li style="list-style-type: none">#! /bin/sh</li>
+<li style="list-style-type: none"></li>
+<li style="list-style-type: none">### BEGIN INIT INFO</li>
+<li style="list-style-type: none"># Provides: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;noip2</li>
+<li style="list-style-type: none"># Required-Start: &nbsp; &nbsp;$syslog</li>
+<li style="list-style-type: none"># Required-Stop: &nbsp; &nbsp; $syslog</li>
+<li style="list-style-type: none"># Default-Start: &nbsp; &nbsp; 2 3 4 5</li>
+<li style="list-style-type: none"># Default-Stop: &nbsp; &nbsp; &nbsp;0 1 6</li>
+<li style="list-style-type: none"># Short-Description: noip.com client service</li>
+<li style="list-style-type: none">### END INIT INFO</li>
+<li style="list-style-type: none"></li>
+<li style="list-style-type: none"># . /lib/lsb/init-functions</li>
+<li style="list-style-type: none">case "$1" in</li>
+<li style="list-style-type: none">&nbsp; &nbsp; start)</li>
+<li style="list-style-type: none">&nbsp; &nbsp; &nbsp; &nbsp; echo "Starting noip2."</li>
+<li style="list-style-type: none">&nbsp; &nbsp; &nbsp; &nbsp; /usr/local/bin/noip2</li>
+<li style="list-style-type: none">&nbsp; &nbsp; ;;</li>
+<li style="list-style-type: none">&nbsp; &nbsp; stop)</li>
+<li style="list-style-type: none">&nbsp; &nbsp; &nbsp; &nbsp; echo "Shutting down noip2."</li>
+<li style="list-style-type: none">&nbsp; &nbsp; &nbsp; &nbsp; killall noip2</li>
+<li style="list-style-type: none">&nbsp; &nbsp; &nbsp; &nbsp; #killproc /usr/local/bin/noip2</li>
+<li style="list-style-type: none">&nbsp; &nbsp; ;;</li>
+<li style="list-style-type: none">&nbsp; &nbsp; *)</li>
+<li style="list-style-type: none">&nbsp; &nbsp; &nbsp; &nbsp; echo "Usage: $0 {start|stop}"</li>
+<li style="list-style-type: none">&nbsp; &nbsp; &nbsp; &nbsp; exit 1</li>
+<li style="list-style-type: none">esac</li>
+<li style="list-style-type: none"></li>
+<li style="list-style-type: none">exit 0</li>
+</ul>
+<b>sudo chmod +x /etc/init.d/noip2<br/>
+sudo update-rc.d noip2 defaults<br/>
+</b><b>sudo reboot</b><br/>
+<br/>
+<br/>
+<span style="color: #007f00">/********* SSL/TLS *********/<br/>
+<br/>
+</span>First, forward port 443 on router<span style="color: #007f00"><br/>
+</span><span style="color: #007f00"><br/>
+</span><span style="color: #0000ff">LETSENCRYPT</span><br/>
+<b>sudo -i<br/>
+git clone https://github.com/letsencrypt/letsencrypt<br/>
+cd letsencrypt<br/>
+./letsencrypt-auto --apache -d codeme.ddnsking.com --verbose<br/>
+</b>certificate and chain at: /etc/letsencrypt/live/codeme.ddnsking.com/fullchain.pem<i><br/>
+</i>account credentials at: /etc/letsencrypt --&gt; should make a <u>secure backup</u>&nbsp;of this folder! (encrypted on the HD?)<br/>
+https://www.ssllabs.com/ssltest/analyze.html?d=codeme.ddnsking.com &#09;# check cert<br/>
+<br/>
+// <b>letsencrypt revoke --cert-path example-cert.pem </b># revoke the certificate<br/>
+--<br/>
+<br/>
+<br/>
+<span style="color: #007f00">/********* OwnCloud *********/</span><br/>
+<br/>
+<b>sudo -i<br/>
+echo 'deb http://download.opensuse.org/repositories/isv:/ownCloud:/community/Debian_8.0/ /' &gt;&gt; /etc/apt/sources.list.d/owncloud.list<br/>
+apt-get update<br/>
+</b><b>apt-get install owncloud</b><br/>
+<b>wget http://download.opensuse.org/repositories/isv:ownCloud:community/Debian_8.0/Release.key</b>&nbsp;&#09;# add the repository key to apt<br/>
+<b>apt-key add - &lt; Release.key </b><br/>
+<b>nano /var/www/owncloud/config/config.php </b>&#09;# add trusted domains<ul><li style="list-style-type: none">'trusted_domains' =&gt; </li>
+<li style="list-style-type: none">&nbsp; array (</li>
+<li style="list-style-type: none">&nbsp; &nbsp; 0 =&gt; '192.168.1.2',</li>
+<li style="list-style-type: none">&nbsp; &nbsp; 1 =&gt; 'codeme.ddnsking.com',</li>
+<li style="list-style-type: none">&nbsp; ),</li>
+<li style="list-style-type: none"></li>
+</ul>
+<br/>
+<span style="color: #007f00">/********* External HD *********/</span><br/>
+<br/>
+<b><br/>
+sudo -i<br/>
+</b><b>mkfs.ext4 /dev/sda</b>&nbsp;&#09;# format drive to ext4 format<br/>
+<b>mkdir /media/data</b><br/>
+<b>mount /dev/sda /media/data<br/>
+</b><b>nano /etc/fstab</b><ul><li style="list-style-type: none">/dev/sda &nbsp; &nbsp; &nbsp; &nbsp;/media/data &nbsp; &nbsp; ext4 &nbsp; &nbsp;defaults &nbsp; &nbsp; &nbsp; &nbsp;0 &nbsp; &nbsp; &nbsp; 0</li>
+</ul>
+<b>reboot<br/>
+mkdir /media/data/owncloud<br/>
+</b><b>service apache2 stop</b><br/>
+<b>nano  /var/www/owncloud/config/config.php</b><ul><li style="list-style-type: none">'datadirectory' =&gt; '/media/data/owncloud/data',</li>
+</ul>
+<b>cp -R /var/www/owncloud/data /media/data/owncloud/data</b><br/>
+<b>chown -R www-data:www-data</b>&nbsp;<b>/media/data/owncloud/data</b>&nbsp;<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+</body></html>

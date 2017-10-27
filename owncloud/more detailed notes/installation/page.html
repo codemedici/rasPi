@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Installation</title>
+</head><body>Apache modules are compiled into shared objects and are dynamically loaded when apache starts- They are at /<b>usr/lib/apache2/modules</b><br/>
+System binaries are located at<b>&nbsp;/usr/sbin</b><br/>
+<img src="screenshot 4.png" /><br/>
+<br/>
+<br/>
+&nbsp;The configuration layout for an Apache2&nbsp;web server installation on Debian&nbsp;systems is as follows: <br/>
+#&#09;/etc/apache2/<br/>
+#&#09;|-- apache2.conf<br/>
+#&#09;|&#09;`-- &nbsp;ports.conf<br/>
+#&#09;|-- mods-enabled<br/>
+#&#09;|&#09;|-- *.load<br/>
+#&#09;|&#09;`-- *.conf<br/>
+#&#09;|-- conf-enabled<br/>
+#&#09;|&#09;`-- *.conf<br/>
+# &#09;`-- sites-enabled<br/>
+#&#09; &#09;`-- *.conf<br/>
+<br/>
+<br/>
+Pi Web Server<br/>
+<br/>
+<br/>
+SET A STATIC IP<br/>
+<br/>
+<b>ifconfig<br/>
+</b><img src="screenshot 2.png" /><br/>
+<b>sudo&nbsp;route -n<br/>
+<img src="screenshot.png" /><br/>
+sudo&nbsp;nano&nbsp;/etc/network/interfaces<br/>
+</b><img src="screenshot 3.png" /><br/>
+<br/>
+<br/>
+INSTALL APACHE, PHP, AND ASSOCIATED LIBRARIES<br/>
+<br/>
+<b>sudo&nbsp;apt-get install apache2<br/>
+sudo&nbsp;apt-get install php5&nbsp;libapache2-mod-php5<br/>
+sudo&nbsp;service apache2&nbsp;restart<br/>
+<br/>
+</b>&nbsp;<br/>
+Now remove the index.html&nbsp;file:<br/>
+<b>&nbsp;sudo&nbsp;rm index.html&nbsp;</b><br/>
+and create the file index.php:<br/>
+<b>&nbsp;sudo&nbsp;nano&nbsp;index.php&nbsp;</b><br/>
+and put some PHP&nbsp;content in it:<br/>
+<i><b>&nbsp;&lt;?php&nbsp;echo "hello world"; ?&gt;</b></i><br/>
+<br/>
+HANDLING DYNAMIC IP<br/>
+<br/>
+www.noip.com<br/>
+forward port 80 from your router (https://www.noip.com/support/knowledgebase/port-forwarding-on-the-netgear-wgr614-v6-router/)<br/>
+www.portchecktool.com<br/>
+<br/>
+<b>http://cosimodm.ddns.net/</b><br/>
+<br/>
+<br/>
+To make noip&nbsp;automatically update the IP&nbsp;address everytime&nbsp;your isp&nbsp;changes your IP&nbsp;address, you will need to install noip’s Dynamic Update Client.<br/>
+&nbsp;<ul><li><b>sudo&nbsp;mkdir&nbsp;/home/pi/noip</b></li>
+<li><b>cd&nbsp;/home/pi/noip</b></li>
+<li><b>sudo wget&nbsp;http://www.no-ip.com/client/linux/noip-duc-linux.tar.gz</b></li>
+<li><b>sudo tar vzxf&nbsp;noip-duc-linux.tar.gz</b></li>
+<li><b>ls</b></li>
+</ul>
+<b>cd&nbsp;<span style="color: #ff0000">noip-2.1.9-1</span></b>”<br/>
+<b>sudo&nbsp;make</b><br/>
+<b>sudo&nbsp;make install</b><br/>
+<br/>
+the Dynamic Update client is started by running  <b>sudo&nbsp;/usr/local/bin/noip2</b><br/>
+&nbsp;<br/>
+The DUC&nbsp;service will now run until the Pi is shutdown.<br/>
+<br/>
+<br/>
+<br/>
+DUC&nbsp;AUTOMATIC STARTUP<br/>
+<br/>
+If you want to run the client at boot time create an init.d script file in <b>/etc/init.d/noip2</b>&nbsp;with this content:<br/>
+<br/>
+<span style="color: #0000ff">#! /bin/sh<br/>
+<br/>
+### BEGIN INIT&nbsp;INFO<br/>
+# Provides: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;noip2<br/>
+# Required-Start: &nbsp; &nbsp;$syslog<br/>
+# Required-Stop: &nbsp; &nbsp; $syslog<br/>
+# Default-Start: &nbsp; &nbsp; 2 3 4 5<br/>
+# Default-Stop: &nbsp; &nbsp; &nbsp;0 1 6<br/>
+# Short-Description: noip.com client service<br/>
+### END INIT&nbsp;INFO<br/>
+<br/>
+# . /lib/lsb/init-functions<br/>
+case "$1" in<br/>
+&nbsp; &nbsp; start)<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; echo "Starting noip2."<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; /usr/local/bin/noip2<br/>
+&nbsp; &nbsp; ;;<br/>
+&nbsp; &nbsp; stop)<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; echo "Shutting down noip2."<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; killall&nbsp;noip2<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; #killproc&nbsp;/usr/local/bin/noip2<br/>
+&nbsp; &nbsp; ;;<br/>
+&nbsp; &nbsp; *)<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; echo "Usage: $0 {start|stop}"<br/>
+&nbsp; &nbsp; &nbsp; &nbsp; exit 1<br/>
+esac<br/>
+<br/>
+</span><span style="color: #0000ff">exit 0</span><br/>
+<br/>
+<br/>
+sudo&nbsp;chmod&nbsp;+x /etc/init.d/noip2<br/>
+sudo&nbsp;update-rc.d noip2&nbsp;defaults<br/>
+Now you can reboot your Raspberry Pi and it will automatically update it\u2019s&nbsp;ip&nbsp;at noip&nbsp;on boot.<br/>
+<br/>
+<br/>
+&nbsp;<br/>
+<br/>
+<br/>
+<span style="color: #ff0000"><b>SECURITY!!!</b></span><br/>
+<br/>
+<span style="color: #ff0000"><b>HARDENING SSH!!!!</b></span><br/>
+<br/>
+Open <b>/etc/ssh/sshd_config</b>, find the line that says #PasswordAuthentication&nbsp;yes, and change it to <i>PasswordAuthentication&nbsp;no</i>. Restart the SSH server daemon to apply the change (sudo&nbsp;service ssh restart.)<span style="font-size: 12pt"><br/>
+</span><span style="font-size: 12pt"><img src="screenshot 6.png" /><br/>
+</span><br/>
+Add <i>PermitRootLogin&nbsp;no</i>&nbsp;to your /etc/ssh/sshd_config<br/>
+&nbsp;<br/>
+<img src="screenshot 7.png" /><br/>
+<br/>
+use <b>fail2ban&nbsp;</b>to prevent brute-force attempts &nbsp;--&gt; http://www.fail2ban.org/wiki/index.php/Main_Page<br/>
+<br/>
+Limiting the users that can SSH to the server. Either by group or just specific users. <br/>
+&nbsp;<br/>
+Add AllowGroups&nbsp;group1&nbsp;group2&nbsp;or AllowUsers&nbsp;user1&nbsp;user2&nbsp;to limit who can SSH to the server.<br/>
+<br/>
+Make the sshd&nbsp;block client IP's&nbsp;that have failed to supply correct login information "<a href="http://denyhosts.sourceforge.net/"><span style="font-size: 12pt">DenyHØsts</span></a><span style="font-size: 12pt">" can do this job quite effectively. --&gt; http://denyhosts.sourceforge.net/<br/>
+</span>This will make sure that brute force-attacks on the sshd&nbsp;wont be effective, but remember! this way you can end up locking your self out if you forget you password. This can be a problem on a remote server that you don't have access to.<br/>
+<br/>
+Move the server port from 22 to another port. Either at your gateway, or on the server. It doesn't increase the security, but does mean all the random internet&nbsp;scanners won't clutter up you log files. --&gt; https://en.wikipedia.org/wiki/Security_through_obscurity<br/>
+<br/>
+Also follow these steps:<br/>
+<b><span style="color: #000000">http://www.techrepublic.com/blog/10-things/10-things-you-should-do-to-secure-apache/</span></b><br/>
+<br/>
+REFERENCES:<br/>
+http://projpi.com/diy-home-projects-with-a-raspberry-pi/pi-owncloud-drop-box-clone/<br/>
+http://projpi.com/diy-home-projects-with-a-raspberry-pi/pi-web-server/<br/>
+http://www.noip.com/support/knowledgebase/installing-the-linux-dynamic-update-client/<br/>
+<br/>
+<br/>
+INSTALLING OWNCLOUD!<br/>
+<br/>
+https://software.opensuse.org/download/package?project=isv:ownCloud:community&amp;package=owncloud<br/>
+<br/>
+&nbsp;<br/>
+For <b>Debian 8.0</b>&nbsp;run the following as <b>root</b>:<br/>
+&nbsp;<b>echo 'deb http://download.opensuse.org/repositories/isv:/ownCloud:/community/Debian_8.0/ /' &gt;&gt; /etc/apt/sources.list.d/owncloud.list apt-get update apt-get install owncloud&nbsp;</b><br/>
+You can add the repository key to apt. Keep in mind that the owner of the key may distribute updates, packages and repositories that your system will trust (<a href="https://wiki.debian.org/SecureApt">more information</a>). To add the key, run:<br/>
+<b>&nbsp;wget&nbsp;http://download.opensuse.org/repositories/isv:ownCloud:community/Debian_8.0/Release.key apt-key add - &lt; Release.key &nbsp;<br/>
+<br/>
+</b><br/>
+</body></html>

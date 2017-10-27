@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Enabling SSL</title>
+</head><body><br/>
+<br/>
+ENABLING SSL<br/>
+<br/>
+LETSENCRYPT!!!!!<br/>
+<br/>
+<b>$ git clone https://github.com/letsencrypt/letsencrypt<br/>
+$ cd&nbsp;letsencrypt<br/>
+</b><b>$ sudo&nbsp;./letsencrypt-auto --apache -d cosimodm.ddns.net --email cosimo_dm@yahoo.it --agree-tos</b><br/>
+# ./letsencrypt-auto --apache -d codeme.ddnsking.com --agree-dev-preview --verbose<br/>
+<img src="screenshot.png" /><br/>
+<br/>
+./letsencrypt-auto --apache -d codeme.ddnsking.com --agree-dev-preview --verbose<br/>
+!important! forward port 443 on router<br/>
+<br/>
+<br/>
+https://www.ssllabs.com/ssltest/analyze.html?d=codeme.ddnsking.com<br/>
+<br/>
+<br/>
+<br/>
+IMPORTANT NOTES:<br/>
+&nbsp;- Congratulations! Your certificate and chain have been saved at<br/>
+&nbsp; &nbsp;<b>/etc/letsencrypt/live/codeme.ddnsking.com/fullchain.pem</b>. Your cert<br/>
+&nbsp; &nbsp;will expire on 2016-05-14. To obtain a new version of the<br/>
+&nbsp; &nbsp;certificate in the future, simply run Let's Encrypt again.<br/>
+<br/>
+<br/>
+<br/>
+https://letsencrypt.readthedocs.org/en/latest/intro.html<br/>
+<br/>
+SELF SIGNED CERT<br/>
+<br/>
+opessl&nbsp;req&nbsp;-x509&nbsp;-nodes -days 365 -newkey&nbsp;rsa:2048 -keyout&nbsp;mysitename.key -out mysitename.crt<br/>
+<br/>
+&nbsp;<ul><li>&nbsp;“<b>sudo&nbsp;-i</b>” </li>
+<li>“<b>mkdir&nbsp;/etc/apache2/ssl</b> ” </li>
+<li>“<b>openssl&nbsp;req&nbsp;-x509&nbsp;-nodes -days 1095 -newkey&nbsp;rsa:2048 -out /etc/apache2/ssl/server.crt&nbsp;-keyout&nbsp;/etc/apache2/ssl/server.key</b> ”<span style="color: #ff0000"> It is important that you give a <b>FQDN</b>&nbsp;– Fully Qualified Domain Name format for Common Name. ( eg. rpi.projpi.com)</span></li>
+<li>“<b>&nbsp;nano&nbsp;/etc/apache2/sites-available/default-ssl</b>” </li>
+</ul>
+<br/>
+You are looking to replace the two lines below :<br/>
+&nbsp;<br/>
+<span style="color: #800000">SSLCertificateFile&nbsp;/etc/ssl/certs/ssl-cert-snakeoil.pem</span><br/>
+<span style="color: #800000">&nbsp;SSLCertificateKeyFile&nbsp;/etc/ssl/private/ssl-cert-snakeoil.key</span><br/>
+&nbsp;<br/>
+<a href="http://projpi.com/wp-content/uploads/2015/05/apache1.png"><img src="image.png" width="641" height="368" /></a><br/>
+&nbsp;<br/>
+ <br/>
+&nbsp;<br/>
+With the two lines below :<br/>
+&nbsp;<br/>
+<b><span style="color: #ff0000">SSLCertificateFile&nbsp;/etc/apache2/ssl/server.crt</span></b><br/>
+<b>&nbsp;<span style="color: #ff0000">&nbsp;SSLCertificateKeyFile&nbsp;/etc/apache2/ssl/server.key</span></b><br/>
+&nbsp;<br/>
+<a href="http://projpi.com/wp-content/uploads/2015/05/apache2.png"><img src="image 2.png" width="640" height="366" /></a><br/>
+&nbsp;<br/>
+<br/>
+&nbsp;<br/>
+6. ” <b>a2enmod&nbsp;ssl</b>&nbsp;” ( to enable ssl)<br/>
+7. “<b>a2ensite&nbsp;default-ssl</b>&nbsp;“<br/>
+8. “<b>service apache2&nbsp;restart</b>&nbsp;” (to restart apache2&nbsp;)<br/>
+&nbsp;<br/>
+<span style="color: #ff0000">You will now be able to access your<b>&nbsp;ownCloud&nbsp;securely</b> via<b>&nbsp;https://youserver.com/owncloud<br/>
+</b><b><br/>
+</b></span><br/>
+</body></html>

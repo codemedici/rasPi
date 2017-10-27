@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Storing on USB</title>
+</head><body><img src="screenshot 2 2.png" /><br/>
+<br/>
+for ext4&nbsp;FS&nbsp;format use:<br/>
+<b>mkfs.ext4&nbsp;/dev/sdc</b><br/>
+<br/>
+<br/>
+<img src="screenshot.png" /><br/>
+<br/>
+<img src="screenshot 2.png" /><br/>
+<br/>
+<img src="screenshot 3.png" /><br/>
+<br/>
+<br/>
+<b>sudo&nbsp;nano&nbsp;/etc/fstab</b><br/>
+for FAT32&nbsp;format add <br/>
+/dev/sda&nbsp; &nbsp; &nbsp; &nbsp; /mnt/data &nbsp; &nbsp; &nbsp; vfat&nbsp; &nbsp; defaults&#09; &nbsp;0&#09;0<br/>
+<img src="screenshot 4.png" /><br/>
+<br/>
+<b>Now at every boot, the drive will automount&nbsp;at /mnt/data </b>folder <br/>
+<br/>
+<img src="screenshot 5.png" /><br/>
+<br/>
+REFERENCES:<br/>
+http://projpi.com/raspberry-pi-tips-and-hacks/raspberry-pi-automount-usb/</body></html>

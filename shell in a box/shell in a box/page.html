@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Shell in a box</title>
+</head><body><span style="font-size: 12pt"><br/>
+Instead of rooting the Kindle and running an SSH client, we use Kindle's&nbsp;web browser to connect to the Raspberry Pi, so that the web browser will behave as SSH client thanks to <a href="https://code.google.com/p/shellinabox/">shellinabox</a>.<br/>
+</span><span style="font-size: 12pt">&nbsp;</span><ul><span style="font-size: 12pt"><li>&nbsp;Install the <a href="https://code.google.com/p/shellinabox/">shellinabox</a>&nbsp;package on Raspberry Pi. </li>
+<li style="list-style-type: none"><ul><li style="list-style-type: none">Full install instructions: <b>https://github.com/shellinabox/shellinabox</b></li>
+<b><li style="list-style-type: none"></li>
+</b></ul>
+</li>
+<b><li style="list-style-type: none">git clone <span style="color: #0000ff">https://github.com/anilgulecha/shellinabox</span></li>
+</b><li style="list-style-type: none">this is an unofficial fork, that allows to log in by providing inline&nbsp;credentials to the browser</li>
+<li style="list-style-type: none"></li>
+<li style="list-style-type: none">Here I posted the solution to the problem : <b>https://github.com/petervojtek/diy/issues/3</b></li>
+<li style="list-style-type: none"><ul><b><li style="list-style-type: none"></li>
+</b></ul>
+</li>
+<li style="list-style-type: none"><b><span style="background-color: #ffffff"><span style="color: #ff0000">SET UP KEYBOARD</span></span></b>:</li>
+<li style="list-style-type: none">before compiling shellinabox, or if already compiled recompile after changes are made:</li>
+<b><li style="list-style-type: none">vim vt100.jspp</li>
+<li style="list-style-type: none">look for line where </li>
+<li style="list-style-type: none">'&lt;td&gt;&lt;img&nbsp;id="kbd_img" src="keyboard.png" /&gt;&lt;/td&gt;' +</li>
+<li style="list-style-type: none">add the following</li>
+<li style="list-style-type: none">'&lt;td&gt;&lt;img&nbsp;id="kbd_img" src="keyboard.png" style="visibility: visible; /&gt;&lt;/td&gt;' +</li>
+</b></span></ul>
+<ul><span style="font-size: 12pt"><li>make sure your Raspberry Pi is connected to network and determine its IP&nbsp;address by running ifconfig&nbsp;</li>
+<li>run following commands on your RPi: </li>
+<li style="list-style-type: none"><ul><li>&nbsp;<b>echo "script --flush /tmp/rpi.terminal.file" &gt; ~/kindle.server</b></li>
+<li><b>chmod&nbsp;+x ~/kindle.server</b></li>
+<li><b>echo "tail -f /tmp/rpi.terminal.file" &gt; kindle.client</b></li>
+<li><b>chmod&nbsp;+x ~/kindle.client</b></li>
+</ul>
+</li>
+<li>make sure the wireless keyboard is connected to your Raspberry Pi and working. I use <a href="http://www.linux-hardware-guide.com/2013-06-20-logitech-mk320-keyboard-and-mouse-usb-wireless">Logitech&nbsp;K220</a>&nbsp;wireless keyboard with success. </li>
+<li style="list-style-type: none"><ul><li>&nbsp;once wireless keyboard is connected to Raspberry Pi enter your login and password via the keyabord&nbsp;so that you login to RPi&nbsp;shell. I type the login and password in <a href="http://glynrob.com/hardware/raspberry-pi-headless/">headless</a>&nbsp;mode so that I cannot see what I type (the Kindle display is not connected yet).</li>
+<li>still in the Raspberry Pi keyboard's shell, I run the command:<b>&nbsp;./kindle.server </b></li>
+</ul>
+</li>
+<li>now, on the Kindle, do following: </li>
+<li style="list-style-type: none"><ul><li>&nbsp;launch the web browser and visit the shellinabox&nbsp;web server running on your Raspberry Pi <b>http://your-raspberry-pi-ip:4200 </b></li>
+<li>in the Kindle's&nbsp;browser, login to your Raspberry Pi's&nbsp;shell with login and password. On my Kindle 4 this means I have to enter the login and password via the virtual keyboard provided by Kindle, which is bit painful (see photo below).</li>
+</ul>
+</li>
+<li style="list-style-type: none"></li>
+<li style="list-style-type: none">* Auto login enabled -- enable auto-login. - To set user and optional password and pause between entering the two set the 'u', 'p' and 'd' URL params. Default dealy&nbsp;is 2000 ms (2 second).</li>
+</span><li style="list-style-type: none"><span style="font-size: 12pt">- Ex: <b>http://localhost/?u=test&amp;p=pASword&nbsp;http://localhost/?u=test&amp;p=pASword&amp;d=5000 </b></span></li>
+<li style="list-style-type: none"><ul><span style="font-size: 12pt"><li>now I enter the following command in my Kindle's&nbsp;web browser via the virtual keyboard: <b>./kindle.client </b></li>
+</span></ul>
+</li>
+<span style="font-size: 12pt"><li>And since this moment, whatever is typed and executed via the wireless keyboard connected to Raspberry Pi, you can see the outcome in the Kindle's&nbsp;web browser.</li>
+<li style="list-style-type: none"><b><span style="color: #ff0000">SET TERMINAL ROWS</span></b>:</li>
+<li style="list-style-type: none"><b>stty&nbsp;rows 45</b></li>
+</span></ul>
+<span style="font-size: 12pt"><br/>
+</span><span style="font-size: 12pt">Making it easier </span><ul><span style="font-size: 12pt"><li>&nbsp;create new linux&nbsp;user on Raspberry Pi named kindle </li>
+<li>add ./kindle.client at the end of <b>/home/kindle/.profile</b>&nbsp;- this will launch the command automatically once you login from the Kindle's&nbsp;browser.</li>
+<li>Kindle 4 will automatically enter sleep mode after 10 minutes. <a href="http://www.amazon.com/forum/kindle/ref=cm_cd_et_md_pl?_encoding=UTF8&cdForum=Fx1D7SY3BVSESG&cdMsgID=Mx2HLTBL11A2UBQ&cdMsgNo=11&cdPage=1&cdSort=oldest&cdThread=Tx3AL0H1N6IDN3S#Mx2HLTBL11A2UBQ">This approach</a>&nbsp;is useful to avoid the sleep mode: </li>
+</span><li style="list-style-type: none"><ul><span style="font-size: 12pt"><li><b>~ds</b></li>
+</span></ul>
+</li>
+</ul>
+<ul><span style="font-size: 12pt"><b><li style="list-style-type: none">PROOF OF WORK:</li>
+</b><li style="list-style-type: none">1) Turn on kindle headless, log in from bluetooth&nbsp;keyboard as user "Kindle" and run ./kindle.server</li>
+<li style="list-style-type: none">2) Connect to localhost:4200 from kindle browser and run ./kindle.client</li>
+<li style="list-style-type: none">3) stty&nbsp;rows 45</li>
+</span></ul>
+<br/>
+<br/>
+<span style="font-size: 12pt">Github&nbsp;issue: <a href="https://github.com/petervojtek/diy/issues/3">https://github.com/petervojtek/diy/issues/3<br/>
+</a><a href="https://github.com/petervojtek/diy/issues/3"><br/>
+</a></span></body></html>

@@ -3,25 +3,31 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>ALL IN 1</title>
-</head><body><span style="color: #007f00">/********* SYSTEM SETUP *********/</span><span style="color: #0000ff"><br/>
+</head><body><span style="font-size: 12pt"><span style="color: #007f00">/********* SYSTEM SETUP *********/</span><span style="color: #0000ff"><br/>
 </span><span style="color: #0000ff"><br/>
 </span><span style="color: #0000ff">FLASHING SD CARD</span><br/>
-<b>df -h</b><br/>
+<tt><b>df -h</b><br/>
 <b>umount /dev/mmcblk0p1<br/>
 umount /dev/mmcblk0p2<br/>
 dd bs=4M if=2016-02-03-raspbian-jessie.img of=/dev/mmcblk0<br/>
-sync<br/>
+</b></tt><b><tt>sync</tt><br/>
 </b>--<br/>
 <br/>
 <span style="color: #0000ff">ROTATE LCD SCREEN<br/>
 </span><span style="color: #0000ff">(</span>don't forget to mount /boot first via <b>mount /dev/mmcblk0p1 /boot</b><span style="color: #0000ff">)</span><br/>
-<b>sudo nano /boot/config.txt</b><br/>
+<tt><b>sudo nano /boot/config.txt</b><br/>
 &gt;lcd_rotate=2<br/>
-<b>sudo reboot</b><br/>
+</tt><tt><b>sudo reboot</b></tt><br/>
 --<br/>
 <br/>
-<span style="color: #0000ff">change your SSH host keys<br/>
-</span>as soon as possible as <i><b>all</b></i>&nbsp;ARM images are pre-configured the same keys.<br/>
+<span style="color: #0000ff">ENABLE SSH AT STARTUP</span><br/>
+using cmd line:<br/>
+<tt><b>sudo systemctl enable ssh.service</b></tt><br/>
+alternatively if you have no lcd, use an SD card reader and (after flashing the card) create an empty file called "ssh" within the SD card's directory,<br/>
+example on windows: C:&gt; <b><tt>echo&gt;E:\ssh</tt></b><br/>
+<br/>
+<span style="color: #0000ff">CHANGE SSH HOST KEYS<br/>
+</span>as soon as possible as <b><i>all</i></b>&nbsp;ARM images are pre-configured the same keys.<br/>
 Changing the SSH host keys can be accomplished by doing the following:<br/>
 root@kali:~ <b>rm /etc/ssh/ssh_host_*</b><br/>
 root@kali:~ <b>dpkg-reconfigure openssh-server</b><br/>
@@ -35,7 +41,7 @@ root@kali:~ <b>service ssh restart</b><br/>
 5 Internationalisation --&gt; Keyboard --&gt; Logitech 350<br/>
 reboot now? YES<br/>
 --<br/>
-<span style="font-size: 10pt"><br/>
+<br/>
 <span style="color: #0000ff">UPDATING</span><br/>
 <b>sudo apt-get update<br/>
 </b><b>sudo apt-get upgrade -y</b><br/>
@@ -45,7 +51,7 @@ reboot now? YES<br/>
 <br/>
 <span style="color: #0000ff">SSH KEYS</span><br/>
 <b>ls ~/.ssh&#09;</b>#checking for existing ssh keys on the client<br/>
-</span><span style="font-size: 10pt"><b>ssh-keygen -t rsa -C "Keys 2 my Pi"</b></span>&nbsp;<br/>
+<b>ssh-keygen -t rsa -C "Keys 2 my Pi"</b>&nbsp;<br/>
 <b>install -d -m 700 .ssh</b>&#09;&#09;#from the server root dir!! (RasPi)<br/>
 <b>cat ~/.ssh/id_rsa.pub | ssh pi@192.168.1.7 'cat &gt;&gt; .ssh/authorized_keys</b>'&#09;#from the client!<br/>
 --<br/>
@@ -199,4 +205,4 @@ mkdir /media/data/owncloud<br/>
 <br/>
 <br/>
 <br/>
-</body></html>
+</span></body></html>

@@ -2,7 +2,7 @@
 <node>
 <version>6</version>
 <dict>
-  <key>expanded</key><false/>
+  <key>expanded</key><true/>
   <key>title</key><string>OwnCloud</string>
   <key>nodeid</key><string>24f41ce4-21a5-49fa-8b7f-8a8e61c3ec7e</string>
   <key>modified_time</key><integer>1509098726</integer>
